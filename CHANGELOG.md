@@ -2,6 +2,57 @@
 
 All notable changes to Reporting Dash will be documented in this file.
 
+## [1.2.0] - 2025-01-14
+
+### Parser Intelligence Upgrade
+- **Unified Number Formatting System**
+  - Smart rounding: 1.2K for 1,234 | 55K for 55,393 | $4.9K for $4,946
+  - Context-aware formatting: currency, percentages, ratings, time
+  - Consistent display across KPIs, emails, charts, tables
+  - Percentages: whole numbers for 10%+, 1 decimal for <10%
+  - Tabular numerals for better alignment
+
+- **Intelligent Email Generation**
+  - Metric priority scoring (Phone Calls: 100, Directions: 95, Views: 30)
+  - Local intent metrics prioritized over vanity metrics
+  - Context-aware growth filtering (ignores 2→10 = +400% as meaningless)
+  - Geographic relevance scoring (home market > distant spikes)
+  - Absolute value + percentage for true impact assessment
+
+- **Smart Metric Filtering**
+  - High-priority metrics: lower volume threshold (50+)
+  - Medium-priority: require 200+ volume
+  - Low-priority: require 500+ volume
+  - Filters out "vanity growth" (high % on tiny numbers)
+  - Prioritizes business-driving metrics
+
+- **Geographic Intelligence**
+  - Auto-detect home market from restaurant name
+  - Home territory changes always relevant (even small %)
+  - Non-home markets need both volume AND growth
+  - Score-based relevance filtering (60+ threshold)
+  - Example: Nashville 2,466 users +19% > Birmingham 1,080 users +151%
+
+- **Enhanced Value Parsing**
+  - Handles: —, N/A, ∞, +100%, 1.2K, 1.5M, New, multiple values
+  - Special character normalization (🟩→positive, ⬆→up)
+  - Unicode to ASCII conversion
+  - Robust percentage extraction
+
+### Technical Improvements
+- New formatting utilities: formatNumber, formatCurrency, formatRating, formatTime, formatChange
+- parseAndNormalizeValue for robust input handling
+- calculateMetricImpactScore for intelligent prioritization
+- shouldMentionGrowth logic prevents irrelevant insights
+- scoreGeographicInsight for location-based filtering
+- detectHomeMarket mapping for 8+ restaurant markets
+
+### Quality of Life
+- Backward compatible with existing code
+- No breaking changes to HTML structure
+- All improvements in JavaScript layer only
+- Maintains all existing features and workflows
+
 ## [1.1.0] - 2025-01-14
 
 ### Enhanced

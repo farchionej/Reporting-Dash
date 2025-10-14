@@ -3462,33 +3462,186 @@ Supports tables with | separators, bullet points, and narrative text."></textare
             return match ? parseFloat(match[1]) : null;
         }
         
-        function formatValue(value, isCurrency = false) {
-            if (value === null || value === undefined) return '—';
-            
-            if (isCurrency) return '$' + value.toLocaleString();
-            
-            if (value >= 1000000) return (value / 1000000).toFixed(1) + 'M';
-            if (value >= 1000) return (value / 1000).toFixed(1) + 'K';
-            
-            // For decimals like ratings
-            if (value < 10 && value % 1 !== 0) return value.toFixed(1);
-            
-            return Math.round(value).toString();
-        }
-        
-        function formatPercentageChange(value) {
-            if (value === null || value === undefined || value === 0) return '—';
-            
-            // Convert to multiplier if 200% or greater
-            if (Math.abs(value) >= 200) {
-                const multiplier = (Math.abs(value) / 100) + 1;
-                const sign = value > 0 ? '+' : '-';
-                return sign + multiplier.toFixed(1) + 'x';
+        // ===================================
+        // UNIFIED NUMBER FORMATTING SYSTEM
+        // ===================================
+
+        // Main formatter - routes to specific formatters based on context
+        function formatValue(value, context = 'default') {
+            if (value === null || value === undefined || value === '—' || value === '') return '—';
+
+            // Handle special values
+            const special = formatSpecialValue(value);
+            if (special !== null) return special;
+
+            // Route to appropriate formatter
+            switch(context) {
+                case 'currency':
+                    return formatCurrency(value);
+                case 'percentage':
+                    return formatPercentage(value);
+                case 'rating':
+                    return formatRating(value);
+                case 'time':
+                    return formatTime(value);
+                default:
+                    return formatNumber(value);
             }
-            
-            // Regular percentage for values under 200%
-            const sign = value > 0 ? '+' : '';
-            return sign + value.toFixed(1) + '%';
+        }
+
+        // Format regular numbers with K/M notation
+        function formatNumber(num) {
+            if (num === null || num === undefined) return '—';
+
+            const absNum = Math.abs(num);
+
+            // Billions (rare for restaurants)
+            if (absNum >= 1_000_000_000) {
+                return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + 'B';
+            }
+
+            // Millions
+            if (absNum >= 1_000_000) {
+                return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
+            }
+
+            // Thousands - show 1 decimal for 1K-9.9K, whole numbers for 10K+
+            if (absNum >= 1_000) {
+                const thousands = num / 1_000;
+
+                if (absNum < 10_000) {
+                    // 1.0K to 9.9K - show decimal if meaningful
+                    return thousands.toFixed(1).replace(/\.0$/, '') + 'K';
+                } else {
+                    // 10K+ - whole numbers only
+                    return Math.round(thousands) + 'K';
+                }
+            }
+
+            // Under 1,000 - always whole numbers
+            return Math.round(num).toLocaleString('en-US');
+        }
+
+        // Format percentages with smart rounding
+        function formatPercentage(num, includeSign = true) {
+            if (num === null || num === undefined || isNaN(num)) return '—';
+            if (num === Infinity) return includeSign ? '+∞%' : '∞%';
+
+            const absNum = Math.abs(num);
+            const sign = includeSign && num > 0 ? '+' : '';
+
+            // Rounding rules for percentages
+            if (absNum >= 10) {
+                // 10%+ → whole numbers (e.g., +186%, -53%)
+                return `${sign}${Math.round(num)}%`;
+            } else {
+                // Under 10% → 1 decimal (e.g., +4.4%, -2.5%, +0.3%)
+                return `${sign}${num.toFixed(1)}%`;
+            }
+        }
+
+        // Format currency values
+        function formatCurrency(num) {
+            if (num === null || num === undefined || isNaN(num)) return '—';
+
+            const absNum = Math.abs(num);
+
+            // $1M+
+            if (absNum >= 1_000_000) {
+                return '$' + (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
+            }
+
+            // $1K to $999K
+            if (absNum >= 1_000) {
+                if (absNum < 10_000) {
+                    return '$' + (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
+                } else {
+                    return '$' + Math.round(num / 1_000) + 'K';
+                }
+            }
+
+            // $100 to $999 - whole dollars
+            if (absNum >= 100) {
+                return '$' + Math.round(num).toLocaleString('en-US');
+            }
+
+            // Under $100 - show cents if present
+            return '$' + num.toFixed(num % 1 === 0 ? 0 : 2);
+        }
+
+        // Format rating values
+        function formatRating(num) {
+            if (num === null || num === undefined || isNaN(num)) return '—';
+            // Always show 1 decimal for ratings
+            return num.toFixed(1);
+        }
+
+        // Format time/duration values
+        function formatTime(seconds) {
+            if (seconds === null || seconds === undefined || isNaN(seconds)) return '—';
+
+            if (seconds >= 3600) {
+                // Hours
+                const hours = Math.floor(seconds / 3600);
+                const mins = Math.round((seconds % 3600) / 60);
+                return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+            } else if (seconds >= 60) {
+                // Minutes and seconds
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.round(seconds % 60);
+                return secs > 0 ? `${mins}:${secs.toString().padStart(2, '0')}` : `${mins}m`;
+            } else {
+                // Seconds only
+                return Math.round(seconds) + 's';
+            }
+        }
+
+        // Format change values with context
+        function formatChange(changeValue, changeType = 'yoy') {
+            if (changeValue === null || changeValue === undefined || isNaN(changeValue)) return '—';
+
+            const formatted = formatPercentage(changeValue, true);
+            const label = changeType === 'yoy' ? 'Y/Y' :
+                          changeType === 'mom' ? 'M/M' : '';
+
+            return label ? `${formatted} ${label}` : formatted;
+        }
+
+        // Handle special value strings
+        function formatSpecialValue(value) {
+            if (value === null || value === undefined) return null;
+            if (value === '' || value === '—' || value === 'N/A') return '—';
+            if (value === Infinity || value === '∞') return '∞';
+            if (typeof value === 'string' && value.toLowerCase() === 'new') return 'New';
+            return null; // Not a special value
+        }
+
+        // Parse and normalize input values (for parsing raw data)
+        function parseAndNormalizeValue(rawValue) {
+            if (!rawValue) return null;
+
+            const special = formatSpecialValue(rawValue);
+            if (special !== null) return { value: null, display: special, isEmpty: special === '—' };
+
+            // Remove formatting
+            let cleaned = rawValue.toString()
+                .replace(/,/g, '')           // Remove commas
+                .replace(/\$/g, '')          // Remove dollar signs
+                .replace(/K/gi, '000')       // Convert K to 000
+                .replace(/M/gi, '000000')    // Convert M to 000000
+                .replace(/%/g, '')           // Remove percent sign
+                .replace(/\+/g, '');         // Remove plus sign
+
+            const num = parseFloat(cleaned);
+
+            if (isNaN(num)) return null;
+
+            return { value: num, display: null, isEmpty: false };
+        }
+
+        // Legacy compatibility wrapper
+        function formatPercentageChange(value) {
+            return formatPercentage(value, true);
         }
         
         function updateAllVisualizations() {
@@ -4887,6 +5040,144 @@ Supports tables with | separators, bullet points, and narrative text."></textare
             return '<span style="color: ' + color + '; font-weight: 600;">' + sign + change.toFixed(1) + '% ' + type + '</span>';
         }
         
+        // ===================================
+        // INTELLIGENT EMAIL GENERATION HELPERS
+        // ===================================
+
+        // Metric priority scoring - local intent metrics get highest priority
+        const metricPriority = {
+            // LOCAL INTENT METRICS (Highest Priority - these drive business)
+            'Phone Calls': 100,
+            'Phone Calls (Ads)': 98,
+            'Directions Requests': 95,
+            'Directions': 95,
+            'Restaurant Visits': 90,
+            'Store visits': 90,
+            'Reservations': 85,
+            'Reservations Button': 85,
+            'Orders': 80,
+            'Online Orders': 80,
+
+            // ENGAGEMENT METRICS (Medium-High Priority)
+            'Website Clicks': 60,
+            'Form Submissions': 55,
+            'Private Events': 50,
+            'Contact Us': 50,
+
+            // AWARENESS METRICS (Lower Priority)
+            'Total Views': 30,
+            'Impressions': 25,
+            'Maps Views': 25,
+
+            // VANITY METRICS (Lowest Priority)
+            'Page Views': 15,
+            'Sessions': 10,
+            'Active Users': 10
+        };
+
+        // Check if a metric's growth is worth mentioning
+        function shouldMentionGrowth(metric, value, change) {
+            const priority = metricPriority[metric] || 30; // Default to medium-low
+
+            // High-priority metrics: lower threshold
+            const volumeThreshold = priority >= 80 ? 50 : priority >= 60 ? 200 : 500;
+
+            // Don't mention if small absolute numbers with huge %
+            // (e.g., 2 → 10 = +400% is not meaningful)
+            if (value < volumeThreshold && Math.abs(change) > 100) {
+                return false; // "Vanity growth" - ignore
+            }
+
+            // Don't mention low-priority metrics with low volume
+            if (priority < 50 && value < 1000) {
+                return false;
+            }
+
+            // DO mention if high-priority metric with any meaningful change
+            if (priority >= 80 && Math.abs(change) >= 15) {
+                return true;
+            }
+
+            // Medium-priority with strong absolute performance
+            if (priority >= 60 && value >= volumeThreshold && Math.abs(change) >= 25) {
+                return true;
+            }
+
+            return false;
+        }
+
+        // Score geographic insights for relevance
+        function scoreGeographicInsight(location, users, change, homeMarket) {
+            const isHomeTerritory = homeMarket && location.toLowerCase().includes(homeMarket.toLowerCase());
+
+            // Calculate absolute impact
+            const absoluteImpact = users * (Math.abs(change) / 100);
+
+            let score = 0;
+
+            // 1. Absolute volume matters most
+            if (users >= 1000) score += 50;
+            else if (users >= 500) score += 30;
+            else if (users >= 100) score += 10;
+
+            // 2. Home territory gets major boost
+            if (isHomeTerritory) {
+                score += 40;
+                // Even small growth in home market matters
+                if (change > 10) score += 20;
+            } else {
+                // Non-home markets need BOTH high volume AND growth
+                if (users < 500 && change > 100) score -= 30; // Penalize "vanity growth"
+                if (users >= 500 && change > 50) score += 15;  // Reward substantial new markets
+            }
+
+            // 3. Absolute impact
+            score += Math.min(absoluteImpact / 10, 30);
+
+            return score;
+        }
+
+        // Detect home market from restaurant name
+        function detectHomeMarket(restaurantName) {
+            const marketMappings = {
+                'Nashville': ['Turkey and the Wolf', 'Hungry Eyes', 'Hot Stuff'],
+                'San Francisco': ['Cote Ouest', '3rd Cousin', 'Nisei', 'Californios', 'Hot Johnnie'],
+                'New Orleans': ['Turkey and the Wolf Icehouse', 'Hot Stuff'],
+                'New York': ['Kei', 'Indigo'],
+                'San Jose': ['District SJ', 'San Benito', 'Underdogs'],
+                'Oakland': ['John\'s Grill'],
+            };
+
+            for (const [market, restaurants] of Object.entries(marketMappings)) {
+                if (restaurants.some(r => restaurantName.includes(r))) {
+                    return market;
+                }
+            }
+
+            return null; // Unknown market
+        }
+
+        // Calculate impact score for a metric
+        function calculateMetricImpactScore(metric, data) {
+            const priority = metricPriority[metric] || 30;
+            const value = data.value || 0;
+            const change = data.yoy || data.mom || data.change || 0;
+            const absoluteImpact = value * (Math.abs(change) / 100);
+
+            // Impact = (Priority weight × 0.5) + (Absolute impact × 0.5)
+            const score = (priority * 0.5) + (Math.min(absoluteImpact / 100, 50) * 0.5);
+
+            return {
+                metric,
+                value,
+                change,
+                priority,
+                absoluteImpact,
+                score,
+                shouldMention: shouldMentionGrowth(metric, value, change)
+            };
+        }
+
         function generateEmailReport() {
             if (Object.keys(dashboardData).length === 0) {
                 alert('No data to generate report. Please parse data first.');
