@@ -4225,19 +4225,58 @@ Supports tables with | separators, bullet points, and narrative text."></textare
                     // Determine which change to show (prioritize YoY)
                     const changeValue = yoyChange || momChange;
                     const changeLabel = yoyChange ? 'YoY' : momChange ? 'MoM' : '';
-                    
-                    // Generate mini sparkline with simple predefined path
-                    const sparklineTrend = changeValue >= 0 ? 'up' : 'down';
-                    const sparklinePoints = sparklineTrend === 'up' ? 
-                        '0,25 15,20 30,15 45,10 60,5' : 
-                        '0,5 15,10 30,15 45,20 60,25';
-                    
-                    card.innerHTML = 
-                        '<div class="gbp-metric-sparkline-mini">' +
-                            '<svg viewBox="0 0 60 30">' +
-                                '<path d="M ' + sparklinePoints + '" />' +
-                            '</svg>' +
-                        '</div>' +
+
+                    // Generate dynamic trend bars based on percentage change
+                    // Map percentage to bar heights (40%, 60%, 80%, 100%)
+                    // Positive percentages: bars go up, negative: bars go down
+                    const absChange = Math.abs(changeValue);
+                    let bar1, bar2, bar3, bar4;
+
+                    if (changeValue >= 0) {
+                        // Positive growth - bars increase in height
+                        if (absChange >= 100) {
+                            // Huge growth: all bars tall
+                            bar1 = 70; bar2 = 85; bar3 = 95; bar4 = 100;
+                        } else if (absChange >= 50) {
+                            // Large growth
+                            bar1 = 50; bar2 = 70; bar3 = 85; bar4 = 100;
+                        } else if (absChange >= 20) {
+                            // Moderate growth
+                            bar1 = 40; bar2 = 60; bar3 = 80; bar4 = 100;
+                        } else if (absChange >= 10) {
+                            // Small growth
+                            bar1 = 30; bar2 = 50; bar3 = 70; bar4 = 85;
+                        } else {
+                            // Minimal growth
+                            bar1 = 25; bar2 = 40; bar3 = 55; bar4 = 70;
+                        }
+                    } else {
+                        // Negative growth - bars decrease in height
+                        if (absChange >= 50) {
+                            // Large decline: bars very short
+                            bar1 = 100; bar2 = 70; bar3 = 40; bar4 = 20;
+                        } else if (absChange >= 20) {
+                            // Moderate decline
+                            bar1 = 100; bar2 = 80; bar3 = 60; bar4 = 40;
+                        } else if (absChange >= 10) {
+                            // Small decline
+                            bar1 = 85; bar2 = 70; bar3 = 55; bar4 = 40;
+                        } else {
+                            // Minimal decline
+                            bar1 = 70; bar2 = 60; bar3 = 50; bar4 = 40;
+                        }
+                    }
+
+                    const trendBarsHTML =
+                        '<div style="display: flex; align-items: flex-end; gap: 3px; height: 24px;">' +
+                            '<div style="width: 4px; height: ' + bar1 + '%; background: linear-gradient(180deg, rgba(139, 92, 246, 0.9) 0%, rgba(109, 40, 217, 0.7) 100%); border-radius: 2px 2px 0 0;"></div>' +
+                            '<div style="width: 4px; height: ' + bar2 + '%; background: linear-gradient(180deg, rgba(139, 92, 246, 0.9) 0%, rgba(109, 40, 217, 0.7) 100%); border-radius: 2px 2px 0 0;"></div>' +
+                            '<div style="width: 4px; height: ' + bar3 + '%; background: linear-gradient(180deg, rgba(139, 92, 246, 0.9) 0%, rgba(109, 40, 217, 0.7) 100%); border-radius: 2px 2px 0 0;"></div>' +
+                            '<div style="width: 4px; height: ' + bar4 + '%; background: linear-gradient(180deg, rgba(139, 92, 246, 0.9) 0%, rgba(109, 40, 217, 0.7) 100%); border-radius: 2px 2px 0 0;"></div>' +
+                        '</div>';
+
+                    card.innerHTML =
+                        '<div class="gbp-metric-sparkline-mini">' + trendBarsHTML + '</div>' +
                         '<div class="gbp-metric-label">' + metricConfig.label + '</div>' +
                         '<div class="gbp-metric-value">' + formatValue(value) + '</div>' +
                         '<div class="gbp-metric-change ' + (changeValue >= 0 ? 'positive' : 'negative') + '">' +

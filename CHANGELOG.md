@@ -2,6 +2,43 @@
 
 All notable changes to Reporting Dash will be documented in this file.
 
+## [1.5.1] - 2025-01-14
+
+### Changed
+- **Dynamic Trend Bars in Performance Tab**
+  - Replaced static SVG sparklines with dynamic trend bars
+  - Bars respond to percentage change values
+  - 4-bar visualization with heights based on performance
+
+### Trend Bar Logic
+**Positive Growth (bars increase):**
+- ≥100% change: Very tall bars (70%, 85%, 95%, 100%)
+- ≥50% change: Tall bars (50%, 70%, 85%, 100%)
+- ≥20% change: Moderate bars (40%, 60%, 80%, 100%)
+- ≥10% change: Small bars (30%, 50%, 70%, 85%)
+- <10% change: Minimal bars (25%, 40%, 55%, 70%)
+
+**Negative Growth (bars decrease):**
+- ≥50% decline: Bars drop sharply (100%, 70%, 40%, 20%)
+- ≥20% decline: Moderate drop (100%, 80%, 60%, 40%)
+- ≥10% decline: Small drop (85%, 70%, 55%, 40%)
+- <10% decline: Minimal drop (70%, 60%, 50%, 40%)
+
+### Visual Impact
+- Google Business Profile cards now show dynamic trend visualization
+- Bars instantly communicate performance at a glance
+- Purple gradient styling matches dashboard theme
+- Positive trends: ascending bars (↗)
+- Negative trends: descending bars (↘)
+- More intuitive than static line charts
+
+### Technical Details
+- Location: Performance Tab > Google Business Profile section
+- Applied to: Total Views, Website Clicks, Phone Calls, Directions
+- Calculation: Based on YoY or MoM percentage change
+- Bar dimensions: 4px width, 3px gap, 24px container height
+- Gradient: rgba(139, 92, 246, 0.9) to rgba(109, 40, 217, 0.7)
+
 ## [1.5.0] - 2025-01-14
 
 ### Added
