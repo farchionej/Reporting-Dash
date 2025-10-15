@@ -2,6 +2,40 @@
 
 All notable changes to Reporting Dash will be documented in this file.
 
+## [1.4.0] - 2025-01-14
+
+### Changed
+- **KPI Card Visual Redesign**
+  - Reduced main KPI number size from 56px to 48px (font-weight 800→700)
+  - Reduced percentage badge size from 13px to 11px
+  - Reduced "vs last year/month" label size from 11px to 9px
+  - Reduced padding on percentage badges (6px 12px → 4px 10px)
+  - Adjusted margins for tighter, more compact layout
+
+- **New Static Trend Bar Icons**
+  - Replaced mini line chart icons with static vertical bar charts
+  - 4 purple gradient bars increasing in height (40%, 60%, 80%, 100%)
+  - Positioned in top-right of KPI card header
+  - Hover effect: brighter purple with glow
+  - Width: 4px per bar, 3px gap between bars
+
+### Design Rationale
+- Cleaner, more professional appearance matching modern dashboard standards
+- Better visual hierarchy: numbers stand out, metadata is subtle
+- Static bars provide consistent visual element across all KPI cards
+- Improved scannability and reduced visual clutter
+
+### Impact
+- Dashboard Overview tab: All KPI cards updated
+- Email reports: All KPI cards updated with inline table-based bars
+- Performance tabs: Inherits updated styles
+
+### Technical Details
+- CSS: .kpi-value (48px), .kpi-change (11px), .kpi-period (9px)
+- New CSS: .kpi-trend-bars with 4 .bar children
+- Email: Inline table structure for bar chart (email-safe HTML)
+- Bar heights: 40%, 60%, 80%, 100% with purple gradient
+
 ## [1.3.1] - 2025-01-14
 
 ### Changed

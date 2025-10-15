@@ -465,16 +465,16 @@
         }
         
         .kpi-value {
-            font-size: 56px;
-            font-weight: 800;
+            font-size: 48px;
+            font-weight: 700;
             background: linear-gradient(135deg,
                 #ffffff 0%,
                 #e0e7ff 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin: 16px 0 12px 0;
-            letter-spacing: -2px;
+            margin: 12px 0 10px 0;
+            letter-spacing: -1.5px;
             line-height: 1;
             filter: drop-shadow(0 4px 12px rgba(139, 92, 246, 0.2));
             font-variant-numeric: tabular-nums;
@@ -486,13 +486,13 @@
         }
         
         .kpi-change {
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 600;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            padding: 6px 12px;
-            border-radius: 8px;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 6px;
             transition: all var(--transition-normal);
             font-variant-numeric: tabular-nums;
         }
@@ -540,11 +540,40 @@
         }
         
         .kpi-period {
-            font-size: 11px;
+            font-size: 9px;
             color: var(--text-tertiary);
             margin-top: 2px;
+            font-weight: 500;
         }
-        
+
+        .kpi-trend-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 24px;
+        }
+
+        .kpi-trend-bars .bar {
+            width: 4px;
+            background: linear-gradient(180deg,
+                rgba(139, 92, 246, 0.9) 0%,
+                rgba(109, 40, 217, 0.7) 100%);
+            border-radius: 2px 2px 0 0;
+            transition: all 0.3s ease;
+        }
+
+        .kpi-trend-bars .bar:nth-child(1) { height: 40%; }
+        .kpi-trend-bars .bar:nth-child(2) { height: 60%; }
+        .kpi-trend-bars .bar:nth-child(3) { height: 80%; }
+        .kpi-trend-bars .bar:nth-child(4) { height: 100%; }
+
+        .kpi-card:hover .kpi-trend-bars .bar {
+            background: linear-gradient(180deg,
+                rgba(139, 92, 246, 1) 0%,
+                rgba(109, 40, 217, 0.9) 100%);
+            box-shadow: 0 0 8px rgba(139, 92, 246, 0.5);
+        }
+
         /* Content Grid */
         .content-grid {
             display: grid;
@@ -3822,6 +3851,12 @@ Supports tables with | separators, bullet points, and narrative text."></textare
                     card.innerHTML = `
                         <div class="kpi-header">
                             <div class="kpi-label">${displayLabel}</div>
+                            <div class="kpi-trend-bars">
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                            </div>
                         </div>
                         <div class="kpi-value">${formatValue(data.value)}</div>
                         <div class="kpi-comparison">${changes.join('')}</div>
@@ -5749,14 +5784,33 @@ ${(() => {
                                     <table cellpadding="0" cellspacing="0" border="0" width="100%" style="height: 100%;">
                                         <tr>
                                             <td style="height: 20px; vertical-align: top;">
-                                                <p style="margin: 0; color: ${isDarkMode ? colors.secondaryText : labelColor}; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; line-height: 1;">
-                                                    ${displayName}
-                                                </p>
+                                                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                    <tr>
+                                                        <td style="width: 70%;">
+                                                            <p style="margin: 0; color: ${isDarkMode ? colors.secondaryText : labelColor}; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; line-height: 1;">
+                                                                ${displayName}
+                                                            </p>
+                                                        </td>
+                                                        <td style="width: 30%; text-align: right;">
+                                                            <table cellpadding="0" cellspacing="0" border="0" style="display: inline-block; vertical-align: bottom;">
+                                                                <tr style="vertical-align: bottom; height: 16px;">
+                                                                    <td style="width: 3px; height: 40%; background: linear-gradient(180deg, rgba(139, 92, 246, 0.9) 0%, rgba(109, 40, 217, 0.7) 100%); border-radius: 2px 2px 0 0; vertical-align: bottom;"></td>
+                                                                    <td style="width: 2px;"></td>
+                                                                    <td style="width: 3px; height: 60%; background: linear-gradient(180deg, rgba(139, 92, 246, 0.9) 0%, rgba(109, 40, 217, 0.7) 100%); border-radius: 2px 2px 0 0; vertical-align: bottom;"></td>
+                                                                    <td style="width: 2px;"></td>
+                                                                    <td style="width: 3px; height: 80%; background: linear-gradient(180deg, rgba(139, 92, 246, 0.9) 0%, rgba(109, 40, 217, 0.7) 100%); border-radius: 2px 2px 0 0; vertical-align: bottom;"></td>
+                                                                    <td style="width: 2px;"></td>
+                                                                    <td style="width: 3px; height: 100%; background: linear-gradient(180deg, rgba(139, 92, 246, 0.9) 0%, rgba(109, 40, 217, 0.7) 100%); border-radius: 2px 2px 0 0; vertical-align: bottom;"></td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </table>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td style="height: 40px; vertical-align: middle;">
-                                                <p style="margin: 0; color: ${isDarkMode ? colors.primaryText : '#0f172a'}; font-size: 20px; font-weight: 600; letter-spacing: -0.5px; line-height: 1; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;">
+                                                <p style="margin: 0; color: ${isDarkMode ? colors.primaryText : '#0f172a'}; font-size: 28px; font-weight: 700; letter-spacing: -0.8px; line-height: 1; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;">
                                                     ${metric === 'Total Cost' || metric.includes('Cost') ? formatValue(data.value, true) : formatValue(data.value)}
                                                 </p>
                                             </td>
@@ -5764,11 +5818,11 @@ ${(() => {
                                         <tr>
                                             <td style="height: 20px; vertical-align: bottom;">
                                                 ${change !== undefined && change !== null ? `
-                                                <p style="margin: 0; font-size: 12px; font-weight: 600; line-height: 1;">
+                                                <p style="margin: 0; font-size: 10px; font-weight: 600; line-height: 1;">
                                                     <span style="color: ${isDarkMode ? (change >= 0 ? colors.successColor : colors.dangerColor) : changeColor};">${changeIcon}</span>
                                                     <span style="color: ${isDarkMode ? (change >= 0 ? colors.successColor : colors.dangerColor) : changeColor};">${formatPercentageChange(change).replace(/[+-]/, '')}</span>
-                                                    <span style="color: ${isDarkMode ? colors.secondaryText : labelColor}; font-weight: 400; font-size: 10px; text-transform: uppercase; letter-spacing: 0.3px;"> ${changeType}</span>
-                                                </p>` : '<p style="margin: 0; color: #94a3b8; font-size: 10px; line-height: 1;">—</p>'}
+                                                    <span style="color: ${isDarkMode ? colors.secondaryText : labelColor}; font-weight: 500; font-size: 9px; text-transform: uppercase; letter-spacing: 0.3px;"> ${changeType}</span>
+                                                </p>` : '<p style="margin: 0; color: #94a3b8; font-size: 9px; line-height: 1;">—</p>'}
                                             </td>
                                         </tr>
                                     </table>
