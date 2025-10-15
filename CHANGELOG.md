@@ -2,6 +2,56 @@
 
 All notable changes to Reporting Dash will be documented in this file.
 
+## [1.3.0] - 2025-01-14
+
+### Added
+- **Google Ads Account-Level Metrics Support**
+  - Parser now extracts Impressions, Clicks, and CTR from Campaign Performance section
+  - Supports both inline format: "Impressions: 45,234" and table format
+  - New dashboard section displaying account metrics with KPI cards
+  - New email template section showing account performance before conversions
+  - Automatic detection and formatting (K/M notation for large numbers)
+
+### Features
+- **Campaign Performance Dashboard**
+  - Account metrics display: Impressions, Clicks, CTR, Total Spend
+  - Visual KPI cards with change indicators
+  - Responsive grid layout (auto-fit, minmax 200px)
+  - Purple gradient styling matching overall theme
+
+- **Email Report Enhancement**
+  - "Google Ads Account Performance" section added
+  - Shows 2-4 metrics depending on data availability
+  - Inline metrics with icons (👁️ 🖱️ 📊 💰)
+  - Percentage change tracking vs previous period
+  - Only displays when at least one metric is available
+
+### Data Format Support
+Accepts these input formats in Campaign Performance section:
+
+**Inline format:**
+```
+Impressions: 45,234
+Clicks: 1,234
+CTR: 2.73%
+Total costs for this period: $2,999.68
+```
+
+**Table format:**
+```
+| Metric       | Value     | % Change |
+| Impressions  | 45,234    | +12%     |
+| Clicks       | 1,234     | +8%      |
+| CTR          | 2.73%     | -3%      |
+```
+
+### Technical Details
+- Parser functions: extractCampaignPerformance() enhanced with account metrics
+- Metric naming: 'Google Ads Impressions', 'Google Ads Clicks', 'Google Ads CTR'
+- Dashboard render: googleAdsAccountMetrics container (index.html:2053)
+- Email template: Account metrics section (index.html:5730)
+- Display logic: Only renders when data is present
+
 ## [1.2.1] - 2025-01-14
 
 ### Fixed

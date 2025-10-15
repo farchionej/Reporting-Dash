@@ -2048,7 +2048,12 @@
                     </div>
                 </div>
             </div>
-            
+
+            <!-- Google Ads Account Metrics -->
+            <div class="content-grid" style="margin-top: 30px;" id="googleAdsAccountMetrics">
+                <!-- Account metrics will be inserted here if data is available -->
+            </div>
+
             <!-- Google Ads Conversion Performance -->
             <div class="content-grid" style="margin-top: 30px;">
                 <div class="card" style="grid-column: span 2;">
@@ -2678,31 +2683,95 @@ Supports tables with | separators, bullet points, and narrative text."></textare
                     isAdsCost: true  // Mark as ads cost from Campaign Performance
                 };
             }
-            
-            // Look for conversion action table
+
+            // Extract account-level metrics (Impressions, Clicks, CTR)
+            const impressionsMatch = sectionText.match(/(?:Total\s+)?Impressions[^:]*:\s*([\d,\.]+[KMB]?)/i);
+            if (impressionsMatch) {
+                data['Google Ads Impressions'] = {
+                    value: parseValue(impressionsMatch[1]),
+                    name: 'Google Ads Impressions',
+                    isAdsMetric: true
+                };
+            }
+
+            const clicksMatch = sectionText.match(/(?:Total\s+)?Clicks[^:]*:\s*([\d,\.]+[KMB]?)/i);
+            if (clicksMatch) {
+                data['Google Ads Clicks'] = {
+                    value: parseValue(clicksMatch[1]),
+                    name: 'Google Ads Clicks',
+                    isAdsMetric: true
+                };
+            }
+
+            const ctrMatch = sectionText.match(/(?:Click-through\s+rate|CTR)[^:]*:\s*([\d,\.]+)%/i);
+            if (ctrMatch) {
+                data['Google Ads CTR'] = {
+                    value: parseFloat(ctrMatch[1]),
+                    name: 'Google Ads CTR',
+                    isAdsMetric: true,
+                    isPercentage: true
+                };
+            }
+
+            // Look for account metrics table and conversion action table
             const lines = sectionText.split('\n');
             let inConversionTable = false;
-            
+            let inAccountMetricsTable = false;
+
             lines.forEach((line, index) => {
+                // Check if we're entering an account metrics table (Impressions, Clicks, CTR)
+                if (line.match(/Metric.*Value|Impressions.*Clicks/i) && !line.match(/Conversion/i)) {
+                    inAccountMetricsTable = true;
+                    return;
+                }
+
+                // Parse account metrics table rows
+                if (inAccountMetricsTable && line.includes('|')) {
+                    const parts = line.split('|').map(p => p.trim()).filter(p => p);
+
+                    // Skip separator lines
+                    if (parts.length >= 2 && !parts[0].match(/^:?-+:?$/)) {
+                        const metricName = parts[0];
+
+                        // Check if this is an account-level metric
+                        if (metricName.match(/^(Impressions|Clicks|CTR|Click-through rate)$/i)) {
+                            const value = parseValue(parts[1]);
+                            const change = parts[2] ? parseChange(parts[2]) : null;
+
+                            if (value !== null) {
+                                const normalizedName = 'Google Ads ' + metricName.replace(/Click-through rate/i, 'CTR');
+                                data[normalizedName] = {
+                                    name: normalizedName,
+                                    value: value,
+                                    change: change,
+                                    isAdsMetric: true,
+                                    isPercentage: metricName.match(/CTR|Click-through/i) ? true : false
+                                };
+                            }
+                        }
+                    }
+                }
+
                 // Check if we're entering a conversion table
                 if (line.match(/Conversion Action|Conversion Volume/i)) {
                     inConversionTable = true;
+                    inAccountMetricsTable = false;
                     return;
                 }
-                
+
                 // Parse conversion table rows
                 if (inConversionTable && line.includes('|')) {
                     const parts = line.split('|').map(p => p.trim()).filter(p => p);
-                    
+
                     // Skip header rows and separator lines
-                    if (parts.length >= 2 && 
-                        !parts[0].match(/^:?-+:?$/) && 
+                    if (parts.length >= 2 &&
+                        !parts[0].match(/^:?-+:?$/) &&
                         !parts[0].match(/Conversion Action/i)) {
-                        
+
                         const metricName = parts[0];
                         const value = parseValue(parts[1]);
                         const change = parts[2] ? parseChange(parts[2]) : null;
-                        
+
                         if (value !== null) {
                             data[metricName] = {
                                 name: metricName,
@@ -2713,10 +2782,11 @@ Supports tables with | separators, bullet points, and narrative text."></textare
                         }
                     }
                 }
-                
-                // Exit table if we hit a blank line or new section
-                if (inConversionTable && (line.trim() === '' || line.match(/^##/))) {
+
+                // Exit tables if we hit a blank line or new section
+                if ((inConversionTable || inAccountMetricsTable) && (line.trim() === '' || line.match(/^##/))) {
                     inConversionTable = false;
+                    inAccountMetricsTable = false;
                 }
             });
             
@@ -4683,7 +4753,85 @@ Supports tables with | separators, bullet points, and narrative text."></textare
                 
                 overviewGbpChart.innerHTML = chartHTML;
             }
-            
+
+            // Update Google Ads Account Metrics in Overview
+            const accountMetricsContainer = document.getElementById('googleAdsAccountMetrics');
+            if (accountMetricsContainer) {
+                const adsImpressions = dashboardData['Google Ads Impressions'];
+                const adsClicks = dashboardData['Google Ads Clicks'];
+                const adsCTR = dashboardData['Google Ads CTR'];
+                const adsCost = dashboardData['Total Cost'];
+
+                // Only render if we have at least one account-level metric
+                if (adsImpressions || adsClicks || adsCTR || adsCost) {
+                    const accountMetrics = [];
+
+                    if (adsImpressions) {
+                        accountMetrics.push({
+                            label: 'Impressions',
+                            value: formatValue(adsImpressions.value),
+                            change: adsImpressions.change,
+                            icon: '👁️'
+                        });
+                    }
+
+                    if (adsClicks) {
+                        accountMetrics.push({
+                            label: 'Clicks',
+                            value: formatValue(adsClicks.value),
+                            change: adsClicks.change,
+                            icon: '🖱️'
+                        });
+                    }
+
+                    if (adsCTR) {
+                        accountMetrics.push({
+                            label: 'CTR',
+                            value: formatPercentage(adsCTR.value, false) + '%',
+                            change: adsCTR.change,
+                            icon: '📊'
+                        });
+                    }
+
+                    if (adsCost) {
+                        accountMetrics.push({
+                            label: 'Total Spend',
+                            value: formatValue(adsCost.value, true),
+                            change: null,
+                            icon: '💰'
+                        });
+                    }
+
+                    accountMetricsContainer.innerHTML = `
+                        <div class="card" style="grid-column: span 2;">
+                            <div class="card-header">
+                                <h3>Google Ads Account Performance</h3>
+                                <span style="font-size: 12px; color: var(--text-secondary);">Campaign overview and key metrics</span>
+                            </div>
+                            <div class="kpi-grid" style="padding: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                ${accountMetrics.map(metric => `
+                                    <div class="kpi-card" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(109, 69, 209, 0.08) 100%); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 12px; padding: 20px;">
+                                        <div style="font-size: 12px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;">
+                                            ${metric.icon} ${metric.label}
+                                        </div>
+                                        <div style="font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; font-variant-numeric: tabular-nums;">
+                                            ${metric.value}
+                                        </div>
+                                        ${metric.change !== null && metric.change !== undefined ? `
+                                            <div class="metric-badge ${metric.change >= 0 ? 'up' : 'down'}" style="display: inline-block;">
+                                                ${metric.change >= 0 ? '+' : ''}${metric.change.toFixed(1)}%
+                                            </div>
+                                        ` : '<div style="color: var(--text-secondary); font-size: 12px;">—</div>'}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    accountMetricsContainer.innerHTML = '';
+                }
+            }
+
             // Update Google Ads Conversion Table in Overview
             const overviewAdsTable = document.getElementById('overviewAdsTable');
             if (overviewAdsTable) {
@@ -5661,7 +5809,111 @@ ${(() => {
                             </table>
                         </td>
                     </tr>
-                    
+
+                    <!-- Google Ads Account Metrics -->
+                    ${(() => {
+                        const adsImpressions = dashboardData['Google Ads Impressions'];
+                        const adsClicks = dashboardData['Google Ads Clicks'];
+                        const adsCTR = dashboardData['Google Ads CTR'];
+                        const adsCost = dashboardData['Total Cost'];
+
+                        // Only show if we have at least one account-level metric
+                        if (adsImpressions || adsClicks || adsCTR) {
+                            const accountMetrics = [];
+
+                            if (adsImpressions) {
+                                accountMetrics.push({
+                                    label: 'Impressions',
+                                    value: formatValue(adsImpressions.value),
+                                    change: adsImpressions.change,
+                                    icon: '👁️'
+                                });
+                            }
+
+                            if (adsClicks) {
+                                accountMetrics.push({
+                                    label: 'Clicks',
+                                    value: formatValue(adsClicks.value),
+                                    change: adsClicks.change,
+                                    icon: '🖱️'
+                                });
+                            }
+
+                            if (adsCTR) {
+                                accountMetrics.push({
+                                    label: 'CTR',
+                                    value: formatPercentage(adsCTR.value, false) + '%',
+                                    change: adsCTR.change,
+                                    icon: '📊'
+                                });
+                            }
+
+                            if (adsCost) {
+                                accountMetrics.push({
+                                    label: 'Total Spend',
+                                    value: formatValue(adsCost.value, true),
+                                    change: null,
+                                    icon: '💰'
+                                });
+                            }
+
+                            return `
+                    <tr>
+                        <td style="padding: 0 30px 30px 30px;" class="mobile-padding">
+                            <h2 style="margin: 0 0 20px 0; color: ${colors.headerText}; font-size: 18px; font-weight: 600; letter-spacing: -0.3px;">
+                                Google Ads Account Performance
+                            </h2>
+
+                            <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tr>
+                                    ${accountMetrics.map(metric => {
+                                        const changeColor = metric.change > 0 ? colors.successColor : metric.change < 0 ? colors.dangerColor : colors.secondaryText;
+                                        const changeIcon = metric.change > 0 ? '↑' : metric.change < 0 ? '↓' : '—';
+
+                                        return `
+                                    <td width="${100 / accountMetrics.length}%" style="padding: 6px; vertical-align: top;">
+                                        <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background: ${colors.cardBg}; border: 1px solid ${colors.borderColor}; border-radius: 8px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);">
+                                            <tr>
+                                                <td style="padding: 16px;">
+                                                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                                        <tr>
+                                                            <td style="height: 24px; vertical-align: top;">
+                                                                <p style="margin: 0; color: ${colors.secondaryText}; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+                                                                    ${metric.icon} ${metric.label}
+                                                                </p>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="height: 40px; vertical-align: middle;">
+                                                                <p style="margin: 0; color: ${isDarkMode ? colors.primaryText : '#0f172a'}; font-size: 20px; font-weight: 600; letter-spacing: -0.5px; line-height: 1; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;">
+                                                                    ${metric.value}
+                                                                </p>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="height: 20px; vertical-align: bottom;">
+                                                                ${metric.change !== undefined && metric.change !== null ? `
+                                                                <p style="margin: 0; font-size: 12px; font-weight: 600; line-height: 1;">
+                                                                    <span style="color: ${changeColor};">${changeIcon}</span>
+                                                                    <span style="color: ${changeColor};">${formatPercentageChange(metric.change).replace(/[+-]/, '')}</span>
+                                                                    <span style="color: ${colors.secondaryText}; font-weight: 400; font-size: 10px; text-transform: uppercase; letter-spacing: 0.3px;"> vs prev</span>
+                                                                </p>` : '<p style="margin: 0; color: #94a3b8; font-size: 10px; line-height: 1;">—</p>'}
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>`;
+                                    }).join('')}
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>`;
+                        }
+                        return '';
+                    })()}
+
                     <!-- Google Ads Conversion Performance -->
                     ${(() => {
                         // Get all conversion actions from dashboardData that are marked as conversion actions
