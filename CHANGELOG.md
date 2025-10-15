@@ -2,6 +2,34 @@
 
 All notable changes to Reporting Dash will be documented in this file.
 
+## [1.3.1] - 2025-01-14
+
+### Changed
+- **Unified Number Formatting Consistency**
+  - Numbers with K/M notation now ALWAYS show 1 decimal place
+    - Before: 55K, 123K, 10K
+    - After: 55.4K, 123.5K, 10.2K (unless exactly .0, then omit)
+  - Percentages now ALWAYS round to whole numbers
+    - Before: +4.4%, -2.5%, +0.3%
+    - After: +4%, -2%, +0%
+  - Currency formatting updated to match K/M notation
+    - Before: $55K, $10K
+    - After: $55.4K, $10.2K
+
+### Examples
+- **55,393** → **55.4K** (not 55K)
+- **123,456** → **123.5K** (not 123K)
+- **10,000** → **10K** (exactly .0, so omitted)
+- **4.4%** → **4%** (rounded to whole number)
+- **$2,999.68** → **$3K** (rounded)
+- **$55,400** → **$55.4K** (1 decimal)
+
+### Impact
+- Applies across entire dashboard: KPIs, charts, tables, email reports
+- More consistent reading experience
+- Easier to compare numbers at a glance
+- Still maintains precision where it matters (1 decimal for K/M)
+
 ## [1.3.0] - 2025-01-14
 
 ### Added

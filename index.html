@@ -3570,44 +3570,30 @@ Supports tables with | separators, bullet points, and narrative text."></textare
                 return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + 'B';
             }
 
-            // Millions
+            // Millions - always 1 decimal (e.g., 1.5M, 2.0M → 2M)
             if (absNum >= 1_000_000) {
                 return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
             }
 
-            // Thousands - show 1 decimal for 1K-9.9K, whole numbers for 10K+
+            // Thousands - always 1 decimal (e.g., 1.2K, 55.4K, 123.5K)
             if (absNum >= 1_000) {
                 const thousands = num / 1_000;
-
-                if (absNum < 10_000) {
-                    // 1.0K to 9.9K - show decimal if meaningful
-                    return thousands.toFixed(1).replace(/\.0$/, '') + 'K';
-                } else {
-                    // 10K+ - whole numbers only
-                    return Math.round(thousands) + 'K';
-                }
+                return thousands.toFixed(1).replace(/\.0$/, '') + 'K';
             }
 
             // Under 1,000 - always whole numbers
             return Math.round(num).toLocaleString('en-US');
         }
 
-        // Format percentages with smart rounding
+        // Format percentages - always whole numbers
         function formatPercentage(num, includeSign = true) {
             if (num === null || num === undefined || isNaN(num)) return '—';
             if (num === Infinity) return includeSign ? '+∞%' : '∞%';
 
-            const absNum = Math.abs(num);
             const sign = includeSign && num > 0 ? '+' : '';
 
-            // Rounding rules for percentages
-            if (absNum >= 10) {
-                // 10%+ → whole numbers (e.g., +186%, -53%)
-                return `${sign}${Math.round(num)}%`;
-            } else {
-                // Under 10% → 1 decimal (e.g., +4.4%, -2.5%, +0.3%)
-                return `${sign}${num.toFixed(1)}%`;
-            }
+            // Always round to whole numbers (e.g., +4%, -2%, +186%)
+            return `${sign}${Math.round(num)}%`;
         }
 
         // Format currency values
@@ -3616,18 +3602,14 @@ Supports tables with | separators, bullet points, and narrative text."></textare
 
             const absNum = Math.abs(num);
 
-            // $1M+
+            // $1M+ - always 1 decimal (e.g., $1.5M, $2.0M → $2M)
             if (absNum >= 1_000_000) {
                 return '$' + (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
             }
 
-            // $1K to $999K
+            // $1K to $999K - always 1 decimal (e.g., $1.2K, $55.4K, $123.5K)
             if (absNum >= 1_000) {
-                if (absNum < 10_000) {
-                    return '$' + (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
-                } else {
-                    return '$' + Math.round(num / 1_000) + 'K';
-                }
+                return '$' + (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
             }
 
             // $100 to $999 - whole dollars
