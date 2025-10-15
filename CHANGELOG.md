@@ -2,6 +2,23 @@
 
 All notable changes to Reporting Dash will be documented in this file.
 
+## [1.2.1] - 2025-01-14
+
+### Fixed
+- **Added Missing Metrics to Priority System**
+  - Customer Inquiries: 75 (high-value engagement metric)
+  - Catering Requests: 70 (high-value leads)
+  - Information Requests: 65 (general inquiries)
+  - Direction Requests: 95 (local intent variant)
+  - Contact Form: 50 (engagement)
+  - Gift Cards: 45 (transaction-related)
+
+### Context
+- These metrics existed in the normalization/grouping system but were missing from the intelligent email generation priority scoring
+- Now properly prioritized in email reports based on local intent value
+- "Customer Inquiries" groups: inquire_now, inquiry, request_info, contact_us
+- "Table Service" is a display suffix for reservation campaigns, not a separate metric
+
 ## [1.2.0] - 2025-01-14
 
 ### Parser Intelligence Upgrade
