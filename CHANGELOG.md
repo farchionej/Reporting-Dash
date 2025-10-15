@@ -2,6 +2,38 @@
 
 All notable changes to Reporting Dash will be documented in this file.
 
+## [1.5.2] - 2025-01-14
+
+### Changed
+- **Darker KPI Card Backgrounds**
+  - Removed purple tint from card backgrounds
+  - Now pure black gradient: rgba(0, 0, 0, 0.95) to rgba(5, 6, 10, 0.9)
+  - Before: rgba(13, 14, 20, ...) with purple hue
+  - After: Pure black for cleaner, more dramatic look
+
+- **Centered KPI Card Content**
+  - All content within KPI cards now center-aligned
+  - KPI values (55.4K, 89, etc.) centered horizontally
+  - Percentage badges centered and aligned horizontally
+  - Label stays left-aligned with trend bars on right (header row)
+  - Better visual balance and cleaner layout
+
+### Visual Impact
+- Darker, more dramatic card appearance
+- No purple tint in card backgrounds (pure black)
+- Professional centered alignment for all metrics
+- Improved readability with centered content
+- Consistent alignment across all KPI cards
+
+### Technical Details
+CSS changes:
+- .kpi-card background: rgba(0, 0, 0, 0.95) gradient
+- .kpi-card: Added align-items: center, text-align: center
+- .kpi-header: Added width: 100%
+- .kpi-value: Added width: 100%
+- .kpi-comparison: Added justify-content: center, width: 100%
+- Gap reduced from 16px to 12px for tighter spacing
+
 ## [1.5.1] - 2025-01-14
 
 ### Changed
