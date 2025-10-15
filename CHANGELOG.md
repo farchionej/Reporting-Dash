@@ -2,6 +2,35 @@
 
 All notable changes to Reporting Dash will be documented in this file.
 
+## [1.5.3] - 2025-01-15
+
+### Changed
+- **Darker Overall Background**
+  - Dashboard background now much darker for better contrast
+  - Linear gradient: #0a0a0f to #050609 (from #020617 to #0f172a)
+  - Still lighter than pure black KPI cards for visual hierarchy
+  - Reduced purple gradient overlay opacity for cleaner appearance
+    - First radial gradient: 0.12 → 0.08
+    - Second radial gradient: 0.08 → 0.05
+    - Third radial gradient: 0.06 → 0.04
+
+- **Cleaner Email Reports**
+  - Removed trend bar charts from email KPI cards
+  - Email now shows clean metric labels without decorative bars
+  - Dashboard KPI cards retain their trend bars (unchanged)
+  - Simpler, more professional email presentation
+
+### Visual Impact
+- Much darker, more immersive dashboard background
+- Better contrast between background and KPI cards
+- Reduced purple hue for cleaner aesthetic
+- Email reports are cleaner and focus on data
+
+### Technical Details
+- Body background gradient updated (lines 81-95)
+- Email template KPI card structure simplified (lines 5931-5933)
+- Dashboard KPI cards unchanged (retain .kpi-trend-bars)
+
 ## [1.5.2] - 2025-01-14
 
 ### Changed
