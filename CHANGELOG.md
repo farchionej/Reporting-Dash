@@ -2,6 +2,69 @@
 
 All notable changes to Reporting Dash will be documented in this file.
 
+## [1.5.0] - 2025-01-14
+
+### Added
+- **Dark/Light Mode Toggle**
+  - Sleek toggle switch in top-right header
+  - Moon icon (🌙) for dark mode, Sun icon (☀️) for light mode
+  - Smooth 0.3s transition between themes
+  - Theme preference saved to localStorage
+  - Persists across page reloads
+
+### Changed
+- **Darker Dashboard Theme (Dark Mode)**
+  - Background: #050609 → #020617 (much darker)
+  - Secondary background: #0d0e14 → #0f172a
+  - Border colors: More subtle with #1e293b
+  - Shadows: Deeper and more dramatic (0.6-0.8 opacity)
+  - Text colors: Brighter whites for better contrast
+  - Mesh gradient overlays: Reduced opacity for cleaner look
+
+- **Light Mode Support**
+  - Clean white/gray color scheme
+  - Background: #f8fafc with subtle purple gradients
+  - Text: Dark slate colors (#0f172a, #475569)
+  - Borders: Light gray (#e2e8f0, #cbd5e1)
+  - Shadows: Soft and subtle (0.08-0.15 opacity)
+  - All UI elements adapt to theme
+
+- **Load Sample Button**
+  - Changed from btn-primary (bright purple) to btn-subtle
+  - Subtle purple tint background (rgba 0.08)
+  - Smaller font size: 14px → 13px
+  - Reduced padding: 10px 18px → 8px 14px
+  - Much less prominent, blends with header
+  - Still fully functional and accessible
+
+### UI/UX Improvements
+- Theme toggle: 60px wide, smooth slider animation
+- Toggle slider: 22px circle with gradient background
+- Hover states: Subtle glow on theme toggle
+- Visual feedback: Slider moves 30px on toggle
+- Accessibility: Clear visual states for both themes
+
+### Technical Details
+CSS additions:
+- body.light-mode class with light theme variables
+- .theme-toggle component (60px × 30px)
+- .theme-toggle-slider (22px circle)
+- .btn-subtle variant for Load Sample button
+- Smooth transitions on all theme-related properties
+
+JavaScript additions:
+- toggleTheme() function
+- localStorage.getItem/setItem('dashboardTheme')
+- DOMContentLoaded theme initialization
+- Icon updates based on theme state
+
+### Impact
+✓ Dashboard adapts to user preference
+✓ Cleaner dark mode with better contrast
+✓ Professional light mode option
+✓ Load Sample button less distracting
+✓ Theme persists across sessions
+
 ## [1.4.0] - 2025-01-14
 
 ### Changed

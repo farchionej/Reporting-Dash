@@ -25,18 +25,18 @@
             --accent-cyan: #06b6d4;
             --accent-pink: #ec4899;
 
-            /* Text Colors */
-            --text-primary: #f3f4f6;
-            --text-secondary: #9ca3af;
-            --text-tertiary: #6b7280;
+            /* Text Colors - Dark Mode */
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-tertiary: #64748b;
 
-            /* Border & Background */
-            --border: #2d2e3a;
-            --border-light: #3d3e4a;
-            --bg-primary: #0d0e14;
-            --bg-secondary: #050609;
+            /* Border & Background - Darker */
+            --border: #1e293b;
+            --border-light: #334155;
+            --bg-primary: #020617;
+            --bg-secondary: #0f172a;
             --bg-tertiary: #000000;
-            --bg-glass: rgba(13, 14, 20, 0.7);
+            --bg-glass: rgba(2, 6, 23, 0.8);
 
             /* Status Colors */
             --success: #10b981;
@@ -48,10 +48,10 @@
             --warning: #f59e0b;
             --warning-glow: rgba(245, 158, 11, 0.3);
 
-            /* Shadows */
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
-            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
-            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+            /* Shadows - Deeper */
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.6);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.7);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.8);
             --shadow-glow: 0 0 40px var(--primary-glow);
 
             /* Animation Timings */
@@ -59,20 +59,46 @@
             --transition-normal: 0.3s ease;
             --transition-slow: 0.5s ease;
         }
+
+        /* Light Mode Variables */
+        body.light-mode {
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-tertiary: #64748b;
+
+            --border: #e2e8f0;
+            --border-light: #cbd5e1;
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f1f5f9;
+            --bg-glass: rgba(248, 250, 252, 0.8);
+
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.15);
+        }
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
             background:
-                radial-gradient(ellipse at 20% 30%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 70%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(6, 182, 212, 0.08) 0%, transparent 50%),
-                linear-gradient(135deg, #050609 0%, #0a0b0f 50%, #050609 100%);
+                radial-gradient(ellipse at 20% 30%, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(6, 182, 212, 0.06) 0%, transparent 50%),
+                linear-gradient(135deg, #020617 0%, #0f172a 50%, #020617 100%);
             background-attachment: fixed;
             color: var(--text-primary);
             line-height: 1.6;
             min-height: 100vh;
             position: relative;
             overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        body.light-mode {
+            background:
+                radial-gradient(ellipse at 20% 30%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(59, 130, 246, 0.06) 0%, transparent 50%),
+                linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #f8fafc 100%);
         }
 
         body::before {
@@ -83,11 +109,16 @@
             right: 0;
             bottom: 0;
             background:
-                radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.08) 0%, transparent 40%);
+                radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.06) 0%, transparent 40%);
             animation: meshGlow 20s ease-in-out infinite;
             pointer-events: none;
             z-index: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        body.light-mode::before {
+            opacity: 0.5;
         }
 
         @keyframes meshGlow {
@@ -241,7 +272,68 @@
         .btn:active {
             transform: translateY(0) scale(0.98);
         }
-        
+
+        /* Subtle button variant (for Load Sample Data) */
+        .btn-subtle {
+            background: rgba(139, 92, 246, 0.08);
+            border: 1px solid rgba(139, 92, 246, 0.15);
+            color: var(--text-secondary);
+            font-size: 13px;
+            padding: 8px 14px;
+        }
+
+        .btn-subtle:hover {
+            background: rgba(139, 92, 246, 0.12);
+            border-color: rgba(139, 92, 246, 0.25);
+            color: var(--text-primary);
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.15);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            padding: 3px;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(139, 92, 246, 0.15);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .theme-toggle-slider {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+        }
+
+        .theme-toggle.light .theme-toggle-slider {
+            transform: translateX(30px);
+            background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+        }
+
+        .theme-toggle-icon {
+            font-size: 12px;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+        }
+
         /* Tabs */
         .tabs {
             display: flex;
@@ -2045,7 +2137,12 @@
                     <div class="header-subtitle" id="headerSubtitle">Restaurant Performance Metrics</div>
                 </div>
                 <div class="header-controls">
-                    <button class="btn btn-primary" onclick="loadSampleReport()">
+                    <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+                        <div class="theme-toggle-slider">
+                            <span class="theme-toggle-icon" id="themeIcon">🌙</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-subtle" onclick="loadSampleReport()">
                         <span>📊</span> Load Sample
                     </button>
                 </div>
@@ -6996,16 +7093,43 @@ Total costs for this period: $2,999.68
         }
 
         // Initialize the dashboard when DOM is ready
+        // Theme Toggle Function
+        function toggleTheme() {
+            const body = document.body;
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+
+            body.classList.toggle('light-mode');
+            themeToggle.classList.toggle('light');
+
+            // Update icon
+            if (body.classList.contains('light-mode')) {
+                themeIcon.textContent = '☀️';
+                localStorage.setItem('dashboardTheme', 'light');
+            } else {
+                themeIcon.textContent = '🌙';
+                localStorage.setItem('dashboardTheme', 'dark');
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Dashboard initialized');
-            
-            // Load dark mode preference from localStorage
+
+            // Load theme preference from localStorage
+            const savedTheme = localStorage.getItem('dashboardTheme');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                document.getElementById('themeToggle').classList.add('light');
+                document.getElementById('themeIcon').textContent = '☀️';
+            }
+
+            // Load email dark mode preference from localStorage
             const savedDarkMode = localStorage.getItem('emailDarkMode') === 'true';
             const darkModeCheckbox = document.getElementById('emailDarkMode');
             if (darkModeCheckbox) {
                 darkModeCheckbox.checked = savedDarkMode;
             }
-            
+
             // Ensure all functions are available
             window.loadSampleReport = loadSampleReport;
             window.parseReport = parseReport;
@@ -7018,6 +7142,7 @@ Total costs for this period: $2,999.68
             window.previewInNewWindow = previewInNewWindow;
             window.resetEmail = resetEmail;
             window.toggleHTMLView = toggleHTMLView;
+            window.toggleTheme = toggleTheme;
         });
     </script>
 </body>
