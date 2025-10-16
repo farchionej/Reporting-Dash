@@ -60,6 +60,36 @@
             --transition-slow: 0.5s ease;
         }
 
+        /* Light Mode Variables */
+        body.light-mode {
+            /* Text Colors - Light Mode */
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-tertiary: #64748b;
+
+            /* Border & Background - Light */
+            --border: #e2e8f0;
+            --border-light: #cbd5e1;
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f1f5f9;
+            --bg-glass: rgba(248, 250, 252, 0.9);
+
+            /* Shadows - Subtle */
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --shadow-glow: 0 0 20px rgba(139, 92, 246, 0.15);
+
+            /* Primary Glow - Lighter */
+            --primary-glow: rgba(139, 92, 246, 0.15);
+
+            /* Status Glows - Lighter */
+            --success-glow: rgba(16, 185, 129, 0.15);
+            --danger-glow: rgba(239, 68, 68, 0.15);
+            --warning-glow: rgba(245, 158, 11, 0.15);
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
             background:
@@ -73,6 +103,14 @@
             min-height: 100vh;
             position: relative;
             overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        body.light-mode {
+            background:
+                radial-gradient(ellipse at 20% 30%, rgba(139, 92, 246, 0.04) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(59, 130, 246, 0.03) 0%, transparent 50%),
+                linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #f8fafc 100%);
         }
 
         body::before {
@@ -88,6 +126,11 @@
             animation: meshGlow 20s ease-in-out infinite;
             pointer-events: none;
             z-index: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        body.light-mode::before {
+            opacity: 0.3;
         }
 
         @keyframes meshGlow {
@@ -596,6 +639,343 @@
                 rgba(139, 92, 246, 1) 0%,
                 rgba(109, 40, 217, 0.9) 100%);
             box-shadow: 0 0 8px rgba(139, 92, 246, 0.5);
+        }
+
+        /* Light Mode - Container Overrides */
+        body.light-mode .header {
+            background: linear-gradient(135deg,
+                rgba(255, 255, 255, 0.95) 0%,
+                rgba(248, 250, 252, 0.9) 100%);
+            border-color: rgba(139, 92, 246, 0.15);
+            box-shadow:
+                0 4px 12px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(139, 92, 246, 0.05),
+                0 0 0 1px rgba(139, 92, 246, 0.08);
+        }
+
+        body.light-mode .header h1 {
+            background: linear-gradient(135deg, #0f172a 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 2px 4px rgba(139, 92, 246, 0.15));
+        }
+
+        body.light-mode .card {
+            background: linear-gradient(135deg,
+                rgba(255, 255, 255, 0.95) 0%,
+                rgba(248, 250, 252, 0.9) 100%);
+            border-color: var(--border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        body.light-mode .card:hover {
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+
+        body.light-mode .kpi-card {
+            background: linear-gradient(135deg,
+                rgba(255, 255, 255, 0.98) 0%,
+                rgba(248, 250, 252, 0.95) 100%);
+            border-color: var(--border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        body.light-mode .kpi-card:hover {
+            box-shadow: 0 4px 16px rgba(139, 92, 246, 0.15);
+            border-color: rgba(139, 92, 246, 0.25);
+        }
+
+        body.light-mode .kpi-value {
+            background: linear-gradient(135deg, #0f172a 0%, #7c3aed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 2px 6px rgba(139, 92, 246, 0.1));
+        }
+
+        body.light-mode .kpi-change.positive {
+            background: linear-gradient(135deg,
+                rgba(16, 185, 129, 0.12) 0%,
+                rgba(16, 185, 129, 0.08) 100%);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        body.light-mode .kpi-change.negative {
+            background: linear-gradient(135deg,
+                rgba(239, 68, 68, 0.12) 0%,
+                rgba(239, 68, 68, 0.08) 100%);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        body.light-mode .kpi-trend-bars .bar {
+            background: linear-gradient(180deg,
+                rgba(124, 58, 237, 0.9) 0%,
+                rgba(109, 40, 217, 0.8) 100%);
+        }
+
+        body.light-mode .analytics-section {
+            background: rgba(248, 250, 252, 0.6);
+            border-color: var(--border);
+        }
+
+        body.light-mode .gbp-metric-card {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: var(--border);
+        }
+
+        body.light-mode .gbp-metric-card:hover {
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+
+        body.light-mode .gbp-metric-icon {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(139, 92, 246, 0.08));
+        }
+
+        /* Light Mode - Chart Bar Colors */
+        body.light-mode .conversion-bar .bar-fill {
+            background: linear-gradient(180deg,
+                #9333ea 0%,
+                #7c3aed 50%,
+                #6d28d9 100%);
+            box-shadow:
+                0 2px 8px rgba(139, 92, 246, 0.25),
+                inset 0 2px 4px rgba(255, 255, 255, 0.15);
+        }
+
+        body.light-mode .conversion-bar:hover .bar-fill {
+            box-shadow:
+                0 4px 12px rgba(139, 92, 246, 0.35),
+                inset 0 2px 6px rgba(255, 255, 255, 0.2);
+        }
+
+        body.light-mode .session-bar .bar-fill {
+            background: linear-gradient(180deg, #8b5cf6, #7c3aed);
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.2);
+        }
+
+        body.light-mode .session-bar .bar-fill.dark {
+            background: linear-gradient(180deg, #6d28d9, #5a38b5);
+        }
+
+        body.light-mode .event-metric-bar {
+            background: rgba(139, 92, 246, 0.08);
+        }
+
+        body.light-mode .event-metric-fill {
+            background: linear-gradient(90deg, #7c3aed, #9333ea);
+            box-shadow: 0 2px 6px rgba(139, 92, 246, 0.2);
+        }
+
+        body.light-mode .event-metric-fill.highlight {
+            background: linear-gradient(90deg, #059669, #10b981);
+            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.2);
+        }
+
+        body.light-mode .traffic-source-bar {
+            background: rgba(16, 185, 129, 0.08);
+        }
+
+        body.light-mode .traffic-source-fill {
+            background: linear-gradient(90deg, #059669, #10b981);
+            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.2);
+        }
+
+        body.light-mode .metric-bar-container {
+            background: rgba(139, 92, 246, 0.06);
+            border-color: rgba(139, 92, 246, 0.15);
+        }
+
+        body.light-mode .metric-bar-fill {
+            background: linear-gradient(90deg, #7c3aed, #9333ea);
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.25);
+        }
+
+        /* Light Mode - Comparison Progress Bars */
+        body.light-mode .comparison-current-bar {
+            background: linear-gradient(90deg, #8b5cf6, #9333ea);
+            box-shadow: 0 2px 4px rgba(139, 92, 246, 0.25);
+        }
+
+        body.light-mode .comparison-previous-bar {
+            background: rgba(139, 92, 246, 0.25);
+        }
+
+        /* Light Mode - Tables */
+        body.light-mode .performance-table tr:hover,
+        body.light-mode .comparison-table tr:hover {
+            background: rgba(139, 92, 246, 0.04);
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.08);
+        }
+
+        body.light-mode .performance-table th,
+        body.light-mode .comparison-table th {
+            border-bottom-color: var(--border-light);
+        }
+
+        body.light-mode .performance-table td,
+        body.light-mode .comparison-table td {
+            border-bottom-color: var(--border);
+        }
+
+        /* Light Mode - Tabs & Buttons */
+        body.light-mode .tabs {
+            background: linear-gradient(135deg,
+                rgba(248, 250, 252, 0.95) 0%,
+                rgba(255, 255, 255, 0.9) 100%);
+            border-color: var(--border);
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+        }
+
+        body.light-mode .tab {
+            background: transparent;
+            border-color: transparent;
+        }
+
+        body.light-mode .tab:hover::before {
+            background: linear-gradient(135deg,
+                rgba(139, 92, 246, 0.06) 0%,
+                rgba(139, 92, 246, 0.08) 100%);
+        }
+
+        body.light-mode .tab.active {
+            background: linear-gradient(135deg,
+                rgba(139, 92, 246, 0.15) 0%,
+                rgba(124, 58, 237, 0.12) 100%);
+            border-color: rgba(139, 92, 246, 0.25);
+            box-shadow:
+                0 2px 8px rgba(139, 92, 246, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4),
+                0 0 0 1px rgba(139, 92, 246, 0.2);
+        }
+
+        body.light-mode .section-tab {
+            background: linear-gradient(135deg,
+                rgba(248, 250, 252, 0.8) 0%,
+                rgba(255, 255, 255, 0.6) 100%);
+            border-color: var(--border);
+        }
+
+        body.light-mode .section-tab:hover {
+            background: linear-gradient(135deg,
+                rgba(139, 92, 246, 0.08) 0%,
+                rgba(124, 58, 237, 0.06) 100%);
+            border-color: rgba(139, 92, 246, 0.2);
+            box-shadow: 0 2px 6px rgba(139, 92, 246, 0.1);
+        }
+
+        body.light-mode .section-tab.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-color: rgba(167, 139, 250, 0.4);
+            box-shadow:
+                0 4px 12px rgba(139, 92, 246, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        body.light-mode .btn {
+            background: linear-gradient(135deg,
+                rgba(255, 255, 255, 0.95) 0%,
+                rgba(248, 250, 252, 0.9) 100%);
+            border-color: var(--border);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        body.light-mode .btn:hover {
+            background: linear-gradient(135deg,
+                rgba(248, 250, 252, 0.95) 0%,
+                rgba(255, 255, 255, 0.9) 100%);
+            border-color: rgba(139, 92, 246, 0.25);
+            box-shadow:
+                0 2px 8px rgba(139, 92, 246, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+
+        body.light-mode .btn-subtle {
+            background: rgba(139, 92, 246, 0.06);
+            border-color: rgba(139, 92, 246, 0.12);
+        }
+
+        body.light-mode .btn-subtle:hover {
+            background: rgba(139, 92, 246, 0.1);
+            border-color: rgba(139, 92, 246, 0.2);
+            box-shadow: 0 2px 6px rgba(139, 92, 246, 0.12);
+        }
+
+        /* Light Mode - Special Elements */
+        body.light-mode .cost-header {
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+        }
+
+        body.light-mode .performance-kpis {
+            background: rgba(248, 250, 252, 0.95);
+            border-color: var(--border);
+        }
+
+        body.light-mode ::selection {
+            background: rgba(139, 92, 246, 0.2);
+            color: var(--text-primary);
+        }
+
+        body.light-mode ::-moz-selection {
+            background: rgba(139, 92, 246, 0.2);
+            color: var(--text-primary);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            padding: 3px;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(139, 92, 246, 0.15);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .theme-toggle-slider {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+        }
+
+        .theme-toggle.light .theme-toggle-slider {
+            transform: translateX(30px);
+            background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+        }
+
+        .theme-toggle-icon {
+            font-size: 12px;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+        }
+
+        body.light-mode .theme-toggle {
+            background: rgba(139, 92, 246, 0.08);
+            border-color: rgba(139, 92, 246, 0.15);
+        }
+
+        body.light-mode .theme-toggle:hover {
+            background: rgba(139, 92, 246, 0.12);
+            border-color: rgba(139, 92, 246, 0.25);
         }
 
         /* Content Grid */
@@ -2069,6 +2449,11 @@
                     <div class="header-subtitle" id="headerSubtitle">Restaurant Performance Metrics</div>
                 </div>
                 <div class="header-controls">
+                    <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+                        <div class="theme-toggle-slider">
+                            <span class="theme-toggle-icon" id="themeIcon">🌙</span>
+                        </div>
+                    </div>
                     <button class="btn btn-subtle" onclick="loadSampleReport()">
                         <span>📊</span> Load Sample
                     </button>
@@ -7039,9 +7424,36 @@ Total costs for this period: $2,999.68
             parseReport();
         }
 
+        // Theme Toggle Function
+        function toggleTheme() {
+            const body = document.body;
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+
+            body.classList.toggle('light-mode');
+            themeToggle.classList.toggle('light');
+
+            // Update icon
+            if (body.classList.contains('light-mode')) {
+                themeIcon.textContent = '☀️';
+                localStorage.setItem('dashboardTheme', 'light');
+            } else {
+                themeIcon.textContent = '🌙';
+                localStorage.setItem('dashboardTheme', 'dark');
+            }
+        }
+
         // Initialize the dashboard when DOM is ready
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Dashboard initialized');
+
+            // Load theme preference from localStorage
+            const savedTheme = localStorage.getItem('dashboardTheme');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                document.getElementById('themeToggle').classList.add('light');
+                document.getElementById('themeIcon').textContent = '☀️';
+            }
 
             // Load email dark mode preference from localStorage
             const savedDarkMode = localStorage.getItem('emailDarkMode') === 'true';
@@ -7062,6 +7474,7 @@ Total costs for this period: $2,999.68
             window.previewInNewWindow = previewInNewWindow;
             window.resetEmail = resetEmail;
             window.toggleHTMLView = toggleHTMLView;
+            window.toggleTheme = toggleTheme;
         });
     </script>
 </body>

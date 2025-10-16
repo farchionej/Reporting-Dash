@@ -2,6 +2,111 @@
 
 All notable changes to Reporting Dash will be documented in this file.
 
+## [1.6.0] - 2025-01-16
+
+### Added - Comprehensive Light Mode
+
+**Theme Toggle System:**
+- Sleek toggle switch in top-right header (60px × 30px pill design)
+- Moon icon 🌙 for dark mode, Sun icon ☀️ for light mode
+- Smooth 0.3s transition between themes
+- localStorage persistence (`dashboardTheme`)
+- Auto-loads user preference on page load
+
+**Light Mode Color Palette:**
+- Background: Clean white/light gray (#f8fafc, #ffffff)
+- Text: Dark slate for excellent readability (#0f172a, #475569)
+- Borders: Subtle gray (#e2e8f0, #cbd5e1)
+- Shadows: Soft and subtle (rgba(0,0,0,0.08-0.15))
+- Purple accents: Optimized for light backgrounds
+
+**Container Adaptations:**
+- Header: White background with subtle purple accent borders
+- Cards: White with light gray borders and soft shadows
+- KPI Cards: White gradient with dark text gradient (slate → purple)
+- Analytics Sections: Very light blue-gray backgrounds
+- GBP Metric Cards: White with light purple icon backgrounds
+- All containers feature improved contrast and hierarchy
+
+**Chart Bar Color Transformations:**
+- **Conversion Bars:** Rich purple gradient (#9333ea → #6d28d9)
+- **Session Bars:** Vibrant purple tones (#8b5cf6 → #7c3aed)
+- **Event Metrics:**
+  - Standard: Deep purple gradient (#7c3aed → #9333ea)
+  - Highlight: Rich green gradient (#059669 → #10b981)
+- **Traffic Sources:** Deep green gradient (#059669 → #10b981)
+- **Metric Bars:** Rich purple with enhanced visibility
+- **Trend Bars:** Darker purple for better contrast
+- All bars feature light container backgrounds for clear visualization
+- Shadows optimized for light mode (0.2-0.3 opacity)
+
+**Table Enhancements:**
+- Light gray borders (#e2e8f0)
+- Subtle purple hover effects (rgba 0.04)
+- Enhanced readability with dark text
+- Clear visual hierarchy
+
+**Interactive Elements:**
+- **Tabs:** Light backgrounds with purple active states
+- **Section Tabs:** White/gray with purple gradients when active
+- **Buttons:** White backgrounds with subtle purple hover tints
+- **Change Indicators:** Light colored backgrounds with borders
+- All elements feature smooth transitions
+
+**Special Elements:**
+- Cost header: Maintains purple gradient with adjusted shadows
+- Performance KPIs: Light gray container backgrounds
+- Selection colors: Light purple (rgba 0.2)
+- Focus states: Purple outline with light shadow
+
+### Technical Implementation
+
+**CSS Architecture:**
+- 180+ lines of light mode overrides
+- Complete body.light-mode class system
+- CSS variable system for theme switching
+- Smooth transitions (0.3s) on all elements
+- Maintains all existing dark mode functionality
+
+**JavaScript Functions:**
+- `toggleTheme()` - Handles theme switching logic
+- localStorage integration for persistence
+- Icon updates based on theme state
+- Auto-initialization on page load
+- No breaking changes to existing code
+
+### Visual Impact
+
+**Professional Aesthetic:**
+- Clean, modern appearance suitable for presentations
+- High contrast for excellent readability in bright environments
+- Vibrant but balanced chart colors
+- Maintains brand purple identity
+- Smooth, polished transitions
+
+**Accessibility:**
+- Excellent contrast ratios in both modes
+- Clear visual hierarchy maintained
+- Focus states work in both themes
+- Reduced motion support unchanged
+- Selection colors optimized for visibility
+
+**User Experience:**
+- Instant theme switching with no page reload
+- Preference persists across sessions
+- Independent from email dark mode setting
+- All features work identically in both modes
+- No performance impact
+
+### Maintained Features
+- ✅ Email dark mode toggle (independent)
+- ✅ All existing dark mode functionality
+- ✅ Chart interactivity and animations
+- ✅ Data parsing and visualization
+- ✅ Responsive design
+- ✅ Print stylesheets
+- ✅ Accessibility features
+
 ## [1.5.4] - 2025-01-15
 
 ### Removed
