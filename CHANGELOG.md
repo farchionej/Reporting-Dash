@@ -2,6 +2,35 @@
 
 All notable changes to Reporting Dash will be documented in this file.
 
+## [1.5.4] - 2025-01-15
+
+### Removed
+- **Dashboard Light/Dark Mode Toggle**
+  - Removed theme toggle button from header
+  - Dashboard now permanently in dark mode
+  - Removed all light mode CSS variables and styles
+  - Removed toggleTheme() function and localStorage theme preference
+  - Cleaned up unused CSS for theme switching
+
+### Kept
+- **Email Dark Mode Functionality**
+  - Email report dark mode checkbox still functional
+  - Users can still toggle dark/light mode for email reports
+  - Email dark mode preference still saved to localStorage
+
+### Visual Impact
+- Cleaner header (no theme toggle)
+- Consistent dark mode experience
+- Simplified codebase without theme switching logic
+- Email reports retain flexible light/dark mode options
+
+### Technical Details
+- Removed: body.light-mode CSS classes
+- Removed: .theme-toggle, .theme-toggle-slider, .theme-toggle-icon CSS
+- Removed: toggleTheme() JavaScript function
+- Removed: Dashboard theme localStorage logic
+- Kept: emailDarkMode checkbox and functionality
+
 ## [1.5.3] - 2025-01-15
 
 ### Changed
